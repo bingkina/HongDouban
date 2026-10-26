@@ -20,6 +20,8 @@ npm run build
 npm start
 ```
 
+`npm run build` 会生成静态站点到 `out/`；`npm start` 预览导出的静态文件，默认地址为 http://127.0.0.1:3000 。
+
 ## 当前功能
 
 - 真实海报推荐、六列热播展示和红果真人剧热度榜。
@@ -38,7 +40,7 @@ npm start
 
 页面三条示例短评均明确标注“示例短评 · 非真实用户”，不冒充真实社区数据。用户输入只作为纯文本渲染，不上传、不执行 HTML。
 
-本期不含视频播放、账号、公共评论后端、独立详情页、自动同步及部署。快照不会随打开页面自动更新。
+本期不含视频播放、账号、公共评论后端、独立详情页及自动同步。快照不会随打开页面自动更新。
 
 来源：
 
@@ -55,3 +57,21 @@ npm start
 ## 后续同步接入
 
 后续同步程序应生成相同的目录快照结构，再通过 `getCatalog()` 提供；组件不直接访问外部平台。同步应以红果作品 ID 去重，保留出处与时间，禁止混入未经红果来源核验的作品。当前没有配置定时任务或外部采集 API。
+
+## Cloudflare Pages 部署
+
+项目已在 `next.config.ts` 配置 `output: "export"`，不需要 Node.js 常驻服务或 Next.js 服务端适配器。
+
+在 Cloudflare Pages 导入 `bingkina/HongDouban` 仓库，使用以下配置：
+
+| 配置 | 值 |
+| --- | --- |
+| 生产分支 | `main` |
+| 框架预设 | Next.js (Static HTML Export) |
+| 构建命令 | `npm run build` |
+| 输出目录 | `out` |
+| Node.js | `22.18.0`（`.node-version`） |
+
+部署包含页面、脚本、样式和 24 张本地海报。个人收藏、评分与短评仍保存在访问者的浏览器，不上传到 Cloudflare。更换访问域名后，原域名的浏览器记录不会自动迁移。
+
+参考：[Cloudflare Next.js 静态部署文档](https://developers.cloudflare.com/pages/framework-guides/nextjs/deploy-a-static-nextjs-site/)。
